@@ -1,5 +1,5 @@
 from flask import Flask,url_for,request
-import functools.redisQueue.redisQueue
+import funtools.redisQueue as rq
 app = Flask(__name__)
 
 @app.route('/')
@@ -9,7 +9,7 @@ def index():
 # accept the slack message
 @app.route('/slack',methods=['POST','GET'])
 def slack():
-    redisQ=redisQueue()
+    redisQ=rq.redisQueue()
     # redisQ.inQueue(request)
     print redisQ.test()
     return 'slack response'

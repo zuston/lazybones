@@ -1,5 +1,3 @@
-import redis
-
 class redisQueue(object):
     def __init__(self):
         pass
