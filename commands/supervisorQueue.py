@@ -20,10 +20,10 @@ def supervisorQueue():
         splitList = content.split(':')
         cmd = splitList[1].strip()
         execode,res = _checkCommand(cmd)
-        if execode:
-            serviceClass,serviceFunction,serviceParam = cmd.split(' ')
-            code,e=_boundClass(serviceClass,serviceFunction,serviceParam)
-            print e
+        if execode==1:
+            # serviceClass,serviceFunction,serviceParam = cmd.split(' ')
+            # code,e=_boundClass(serviceClass,serviceFunction,serviceParam)
+            # print e
             _send2Slack('执行的命令为'+cmd)
         else:
             msg = 'command格式:\n'
@@ -81,7 +81,7 @@ def _commandList():
 
 def _checkCommand(cmd):
     if cmd=='':
-        return [0,_commandList()]
+        return [-1,_commandList()]
     paramCount = len(cmd.split(' '))
     if _commandList().has_key(cmd.split(' ')[0]):
         dictCommand = _commandList()
@@ -92,6 +92,9 @@ def _checkCommand(cmd):
                 return [1,'ok']
             else:
                 return [0,{cmd.split(' ')[0]:dictCommand[cmd.split(' ')[0]]}]
+    else:
+        return [-1,_commandList()]
+
 
 def loopSupervisor():
     while True:
@@ -133,7 +136,7 @@ def test():
 
 if __name__ == '__main__':
     # test_split()
-    # loopSupervisor()
+    loopSupervisor()
     # _commandList()
     # test()
-    supervisorQueue()
+    # supervisorQueue()
