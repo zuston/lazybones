@@ -11,9 +11,8 @@ from funtools import redisQueue as rq
 from funtools import slackMsg as sm
 
 def supervisorQueue():
-    # rd = rq.redisQueue('zqueue')
-    # content = rd.popQueue()
-    content = 'robot:oj test 2,6,4'
+    rd = rq.redisQueue('zqueue')
+    content = rd.popQueue()
     if content is None:
         print 'redis中无数据.....'
     else:
@@ -34,9 +33,8 @@ def supervisorQueue():
             _send2Slack(msg)
 
 def _send2Slack(msg):
-    print msg
-    # sendm = sm.slackMsg()
-    # sendm.sendMsg('#zbot','robot',msg,':ghost:')
+    sendm = sm.slackMsg()
+    sendm.sendMsg('#zbot','robot',msg,':ghost:')
 
 def _boundClass(classname,func,param):
     try:
