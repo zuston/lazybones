@@ -5,50 +5,48 @@ __author__ = 'zuston'
 # 监听消息queue的请求
 import sys
 import time
+import os
 sys.path.append('..')
 from funtools import redisQueue as rq
 from funtools import slackMsg as sm
 
 def supervisorQueue():
-    rd = rq.redisQueue('zqueue')
-    content = rd.popQueue()
+    # rd = rq.redisQueue('zqueue')
+    # content = rd.popQueue()
+    content = 'robot:oj test 2,6,4'
     if content is None:
         print 'redis中无数据.....'
     else:
         # robot:oj send 12,23,54,65
         splitList = content.split(':')
-        cmd = splitList[1].strip().split(' ')
-        cmdLen = len(cmd)
-        if cmdLen==0:
-            e='命令缺少执行参数'
-            # TODO: 发送错误信息，-h的命令
-        if cmdLen==1:
-            e='缺少action'
-            # TODO: 提示service下的action动作
-        if cmdLen==2:
-            e='待查'
-        if cmdLen==3:
-            serviceClass,serviceFunction,serviceParam = cmd
+        cmd = splitList[1].strip()
+        execode,res = _checkCommand(cmd)
+        if execode:
+            serviceClass,serviceFunction,serviceParam = cmd.split(' ')
             code,e=_boundClass(serviceClass,serviceFunction,serviceParam)
-        if cmdLen>3:
-            e='参数过多,出错'
-            # TODO:
-        send2Slack(e)
+            print e
+            _send2Slack('执行的命令为'+cmd)
+        else:
+            msg = 'command格式:\n'
+            for key in res:
+                for value in res[key]:
+                    msg += 'robot:'+key+' '+value+' params'+'\n'
+            _send2Slack(msg)
 
-def send2Slack(msg):
-    sendm = sm.slackMsg()
-    sendm.sendMsg('#zbot','robot',msg,':ghost:')
+def _send2Slack(msg):
+    print msg
+    # sendm = sm.slackMsg()
+    # sendm.sendMsg('#zbot','robot',msg,':ghost:')
 
 def _boundClass(classname,func,param):
     try:
         module = __import__("service."+classname+'Service')
         service = getattr(module,classname+'Service')
         instance = getattr(service,classname+"Service")
-        function = getattr(instance(),func)
+        function = getattr(instance(),func+'Action')
         paramList = _parseParam(param)
         return function(paramList)
     except Exception,e:
-        # TODO: 提醒
         return [0,e]
 
 
@@ -61,6 +59,41 @@ def _parseParam(param):
         except ValueError:
             paramList.append(oneparam)
     return paramList
+
+# 获取service下面的命令列表
+# TODO: 参数未获取，需要获取
+def _commandList():
+    serviceName = {}
+    import re
+    for filename in os.listdir('../service'):
+        if filename!="__init__.py" and re.match('^.*\.pyc$',filename) is None:
+            serviceName[filename.split('S')[0]] = []
+            module = __import__("service."+filename.split('.')[0])
+            ser = getattr(module,filename.split('.')[0])
+            instance = getattr(ser,filename.split('.')[0])
+            for classAction in dir(instance()):
+                if re.match("^__.*__$",classAction) is None and re.match("^.*Action$",classAction) is not None:
+                    # print classAction
+                    serviceName[filename.split('S')[0]].append(classAction.split('A')[0])
+    # {'oj': ['send', 'test']}
+    # {'news': ['get'], 'oj': ['test']}
+    # 此为 robot:oj send param
+    # 此为 robot:oj test param
+    return serviceName
+
+def _checkCommand(cmd):
+    if cmd=='':
+        return [0,_commandList()]
+    paramCount = len(cmd.split(' '))
+    if _commandList().has_key(cmd.split(' ')[0]):
+        dictCommand = _commandList()
+        if paramCount==1:
+            return [0,{cmd.split(' ')[0]:dictCommand[cmd.split(' ')[0]]}]
+        else:
+            if cmd.split(' ')[1] in dictCommand[cmd.split(' ')[0]]:
+                return [1,'ok']
+            else:
+                return [0,{cmd.split(' ')[0]:dictCommand[cmd.split(' ')[0]]}]
 
 def loopSupervisor():
     while True:
@@ -76,6 +109,8 @@ def test_split():
     module = __import__("service."+servicename+'Service')
     ser = getattr(module,servicename+'Service')
     instance = getattr(ser,servicename+'Service')
+    print dir(instance())
+    exit(1)
     func = getattr(instance(),'test')
     func()
     param = splitList[1].split(" ")[2]
@@ -91,6 +126,16 @@ def test_split():
             paramList.append(oneparam)
     print paramList
 
+def test():
+    code,res=_checkCommand('news kiasd')
+    if code:
+        print '校验参数，执行命令'
+    else:
+        print res
+
 if __name__ == '__main__':
     # test_split()
-    loopSupervisor()
+    # loopSupervisor()
+    # _commandList()
+    # test()
+    supervisorQueue()

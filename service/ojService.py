@@ -9,12 +9,6 @@ class ojService(object):
         pass
 
     def send(self,msgList):
-        # self.mailAccount = mailConfig['mailAccount']
-        # self.mailPwd = mailConfig['mailPwd']
-        # self.smtpServer = mailConfig['smtpServer']
-        # self.popServer = mailConfig['popServer']
-        # self.sendAddr = mailConfig['sendAddr']
-        # self.subject = mailConfig['subject']
         mailConfig = {
             "mailAccount":"zuston@sina.cn",
             "mailPwd":"12267020zjf",
@@ -26,5 +20,7 @@ class ojService(object):
         mail = mt.mailTool(mailConfig)
         return mail.sendMail(msgList[0])
 
-    def test(self,paramList=[]):
+
+    def testAction(self,paramList=[]):
         print 'this is the ojService'
+        return [1,'ok']
