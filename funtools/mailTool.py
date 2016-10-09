@@ -29,7 +29,7 @@ class mailTool(object):
         msg = MIMEMultipart()
         msg['From'] = self._format_addr(u'<%s>' % self.mailAccount)
         msg['To'] = self._format_addr(u'<%s>' % self.sendAddr)
-        msg['Subject'] = Header(u'%s'self.subject, 'utf-8').encode()
+        msg['Subject'] = Header(u'<%s>'%self.subject, 'utf-8').encode()
         # 发送内容
         msg.attach(MIMEText(mailInfo,'plain','utf-8'))
         if attchmentPath is not None:
@@ -47,6 +47,7 @@ class mailTool(object):
         server.login(self.mailAccount, self.mailPwd)
         server.sendmail(self.mailAccount, self.sendAddr, msg.as_string())
         server.quit()
+        return [1,'ok']
 
 
     def getMail(self):
