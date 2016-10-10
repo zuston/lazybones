@@ -11,8 +11,7 @@ from funtools import redisQueue as rq
 from funtools import slackMsg as sm
 
 def supervisorQueue():
-    rd = rq.redisQueue('zqueue')
-    content = rd.popQueue()
+    content = _getCommand()
     if content is None:
         print 'redis中无数据.....'
     else:
@@ -24,15 +23,27 @@ def supervisorQueue():
             # serviceClass,serviceFunction,serviceParam = cmd.split(' ')
             # code,e=_boundClass(serviceClass,serviceFunction,serviceParam)
             # print e
-            _send2Slack('执行的命令为'+cmd)
+            response = '成功'
+            _send2Slack([execode,response])
         else:
-            msg = 'command格式:\n'
-            for key in res:
-                for value in res[key]:
-                    msg += 'robot:'+key+' '+value+' params'+'\n'
-            _send2Slack(msg)
+            print execode,res
+            _send2Slack([execode,res])
 
-def _send2Slack(msg):
+def loopSupervisor():
+    while True:
+        supervisorQueue()
+        time.sleep(1)
+
+
+def _send2Slack(list=[]):
+    if list[0]==1:
+        msg = list[1]
+    if list[0]==0:
+        # TODO: 发送的格式需要改进
+        msg = 'command格式:\n'
+        for key in list[1]:
+            for value in list[1][key]:
+                msg += 'robot:'+key+' '+value+' params'+'\n'
     sendm = sm.slackMsg()
     sendm.sendMsg('#zbot','robot',msg,':ghost:')
 
@@ -81,7 +92,7 @@ def _commandList():
 
 def _checkCommand(cmd):
     if cmd=='':
-        return [-1,_commandList()]
+        return [0,_commandList()]
     paramCount = len(cmd.split(' '))
     if _commandList().has_key(cmd.split(' ')[0]):
         dictCommand = _commandList()
@@ -93,50 +104,12 @@ def _checkCommand(cmd):
             else:
                 return [0,{cmd.split(' ')[0]:dictCommand[cmd.split(' ')[0]]}]
     else:
-        return [-1,_commandList()]
+        return [0,_commandList()]
 
-
-def loopSupervisor():
-    while True:
-        supervisorQueue()
-        time.sleep(1)
-
-def test_split():
-    string = 'robot:oj send 好的,45,12'
-    splitList = string.split(':')
-    print splitList[1].split(' ')
-    servicename = splitList[1].split(" ")[0]
-    print servicename
-    module = __import__("service."+servicename+'Service')
-    ser = getattr(module,servicename+'Service')
-    instance = getattr(ser,servicename+'Service')
-    print dir(instance())
-    exit(1)
-    func = getattr(instance(),'test')
-    func()
-    param = splitList[1].split(" ")[2]
-    print param.split(',')
-    paramList = []
-    for oneparam in param.split(','):
-        try:
-            changeNum = int(oneparam)
-            print changeNum
-            paramList.append(changeNum)
-        except ValueError:
-            print '字符串'+oneparam
-            paramList.append(oneparam)
-    print paramList
-
-def test():
-    code,res=_checkCommand('news kiasd')
-    if code:
-        print '校验参数，执行命令'
-    else:
-        print res
+def _getCommand():
+    rd = rq.redisQueue('zqueue')
+    content = rd.popQueue()
+    return content
 
 if __name__ == '__main__':
-    # test_split()
     loopSupervisor()
-    # _commandList()
-    # test()
-    # supervisorQueue()
