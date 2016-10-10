@@ -6,6 +6,7 @@ __author__ = 'zuston'
 import sys
 import time
 import os
+import logging
 sys.path.append('..')
 from funtools import redisQueue as rq
 from funtools import slackMsg as sm
@@ -13,21 +14,26 @@ from funtools import slackMsg as sm
 def supervisorQueue():
     content = _getCommand()
     if content is None:
-        print 'redis中无数据.....'
+        # logging.info('empty')
+        pass
     else:
         # robot:oj send 12,23,54,65
         splitList = content.split(':')
         cmd = splitList[1].strip()
         execode,res = _checkCommand(cmd)
+        logMsg = ''
         if execode==1:
             # serviceClass,serviceFunction,serviceParam = cmd.split(' ')
             # code,e=_boundClass(serviceClass,serviceFunction,serviceParam)
             # print e
+            logMsg += 'service act successfully'
             response = '成功'
             _send2Slack([execode,response])
         else:
-            print execode,res
+            logMsg += 'command has problems'
             _send2Slack([execode,res])
+        logging.info('\ncmd:[%s] %s\n========================'%(content,logMsg))
+
 
 def loopSupervisor():
     while True:
@@ -112,4 +118,9 @@ def _getCommand():
     return content
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s %(levelname)s %(message)s',
+                        datefmt='%a, %d %b %Y %H:%M:%S',
+                        filename='../log/service.log',
+                        filemode='w')
     loopSupervisor()
