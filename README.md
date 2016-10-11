@@ -14,12 +14,12 @@
 <br>开发一个服务的话，其实只要在service下面新建一个nameService然后创建同名的类，然后就创建以Action为后缀的方法就行了。后期这里可以用命令行来实现服务的基本文本创建。
 ##部署
 记得修改funtools里面的slackMsg.py里面的配置<br>
-记得安装redis,ubuntu(sudo apt-get install redis)mac(brew install redis)
-git clone git@github.com:zuston/lazybones.git
-cd lazybones
-./make.sh install
-./make.sh start
-<br>
+记得安装redis,ubuntu(sudo apt-get install redis)mac(brew install redis)<br>
+git clone git@github.com:zuston/lazybones.git<br>
+cd lazybones<br>
+./make.sh install<br>
+./make.sh start<br>
+
 - [ ] shell命令实现service的文本创建 
 - [ ] 实现php语言开发的服务的无缝连接
 - [ ] slack配置抽离出来
