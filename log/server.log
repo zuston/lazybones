@@ -1,6 +1,0 @@
-Tue, 11 Oct 2016 00:12:14 WARNING  * Debugger is active!
-Tue, 11 Oct 2016 00:12:14 INFO  * Debugger pin code: 290-491-031
-Tue, 11 Oct 2016 00:12:28 INFO accept successfully
-Tue, 11 Oct 2016 00:12:28 INFO 127.0.0.1 - - [11/Oct/2016 00:12:28] "POST /slack HTTP/1.1" 200 -
-Tue, 11 Oct 2016 00:12:38 INFO accept successfully
-Tue, 11 Oct 2016 00:12:38 INFO 127.0.0.1 - - [11/Oct/2016 00:12:38] "POST /slack HTTP/1.1" 200 -

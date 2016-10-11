@@ -34,6 +34,13 @@ def testCommand2Service():
             paramList.append(oneparam)
     print paramList
 
+def listType():
+    list = ['jello',"jei"]
+    if type(list)==list:
+        print 'i am list'
+    else:
+        print 'i not list'
 if __name__ == '__main__':
     # testCommand2Service()
-    sq.loopSupervisor()
+    # sq.loopSupervisor()
+    listType()
