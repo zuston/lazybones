@@ -8,7 +8,10 @@ class ojService(object):
     def __init__(self):
         pass
 
-    def send(self,msgList):
+    # example
+    def sendAction(self,msgList):
+        if msgList is None:
+            return [0,'参数为空']
         mailConfig = {
             "mailAccount":"zuston@sina.cn",
             "mailPwd":"12267020zjf",
@@ -18,7 +21,8 @@ class ojService(object):
             "subject":"love"
         }
         mail = mt.mailTool(mailConfig)
-        return mail.sendMail(msgList[0])
+        mail.sendMail(str(msgList))
+        return [1,'ok']
 
 
     def testAction(self,paramList=[]):
