@@ -12,6 +12,7 @@ from funtools import redisQueue as rq
 from funtools import slackMsg as sm
 
 def supervisorQueue():
+
     content = _getCommand()
     if content is None:
         # logging.info('empty')
@@ -23,11 +24,19 @@ def supervisorQueue():
         execode,res = _checkCommand(cmd)
         logMsg = ''
         if execode==1:
-            # serviceClass,serviceFunction,serviceParam = cmd.split(' ')
-            # code,e=_boundClass(serviceClass,serviceFunction,serviceParam)
-            # print e
-            logMsg += 'service act successfully'
-            response = '成功'
+            # TODO: 参数解析的话针对有的service无参数，有的有参数，外部无法获取类方法的参数集合，需要改进
+            if len(cmd.split(' '))==3:
+                serviceClass,serviceFunction,serviceParam = cmd.split(' ')
+                code,e=_boundClass(serviceClass,serviceFunction,serviceParam)
+            else:
+                serviceClass,serviceFunction = cmd.split(' ')
+                code,e=_boundClass(serviceClass,serviceFunction)
+            if code==1:
+                logMsg += 'service act successfully'
+                response='service act successfully'
+            else:
+                logMsg+='service has error'
+                response = res
             _send2Slack([execode,response])
         else:
             logMsg += 'command has problems'
@@ -41,26 +50,31 @@ def loopSupervisor():
         time.sleep(1)
 
 
-def _send2Slack(list=[]):
-    if list[0]==1:
-        msg = list[1]
-    if list[0]==0:
-        # TODO: 发送的格式需要改进
-        msg = 'command格式:\n'
-        for key in list[1]:
-            for value in list[1][key]:
-                msg += 'robot:'+key+' '+value+' params'+'\n'
+def _send2Slack(lst=[]):
+    if lst[0]==1:
+        msg = lst[1]
+    if lst[0]==0:
+        if type(lst) == list:
+            # TODO: 发送的格式需要改进
+            msg = '---command格式---\n'
+            for key in lst[1]:
+                for value in lst[1][key]:
+                    msg += 'robot:'+key+' '+value+' params'+'\n'
+            msg += '---------------\n'
+        else:
+            msg = lst[1]
+    print msg
     sendm = sm.slackMsg()
     sendm.sendMsg('#zbot','robot',msg,':ghost:')
 
-def _boundClass(classname,func,param):
+# param参数为string,暂时根据具体的方法内部来进行解析
+def _boundClass(classname,func,param=None):
     try:
         module = __import__("service."+classname+'Service')
         service = getattr(module,classname+'Service')
         instance = getattr(service,classname+"Service")
         function = getattr(instance(),func+'Action')
-        paramList = _parseParam(param)
-        return function(paramList)
+        return function() if param is None else function(param)
     except Exception,e:
         return [0,e]
 
