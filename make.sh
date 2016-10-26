@@ -17,7 +17,7 @@ if [ ! -n "$1" ]; then
   commandTip
 else
   if [ "$1" = "start" ]; then
-    nohup python steup.py &> /dev/null &
+    nohup python setup.py &> /dev/null &
     cd ./commands
     nohup python supervisorQueue.py &> /dev/null &
   elif [ "$1" = "stop" ]; then
