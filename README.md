@@ -17,6 +17,8 @@ cd lazybones<br>
 ./lazybones install<br>
 ./lazybones start<br>
 
+##TODO
+
 - [ ] shell命令实现service的文本创建
 - [x] 实现php语言开发的服务的无缝连接
 - [ ] slack配置抽离出来
