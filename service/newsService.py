@@ -3,7 +3,7 @@ class newsService(object):
         pass
 
     def getAction(self):
-        pass
+        return "get action"
 
     def putAction(self):
         pass
