@@ -59,8 +59,3 @@ class mailTool(object):
 
     def test(self):
         print "ds"
-
-if __name__ == '__main__':
-    zmail = mailTool()
-    config = {'mailAccount':'zuston@sina.cn'}
-    # zmail.sendMail('你好吗,很想你','../../data/excel-file/0815.xlsx')

@@ -89,7 +89,6 @@ def loop():
             continue
         commandList = __removeTrigger(queueContent)
         taskInfo = __controller(commandList)
-        print taskInfo
         __sendAuto(taskInfo)
 
 def test():

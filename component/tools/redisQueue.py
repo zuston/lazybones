@@ -38,6 +38,3 @@ class redisQueue(object):
             return memeber
         else:
             return None
-
-if __name__ == '__main__':
-    pass

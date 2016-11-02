@@ -2,7 +2,7 @@
 import json
 class slackMsg(object):
     def __init__(self):
-        pass
+        self.url = 'https://hooks.slack.com/services/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'
 
     def sendMsg(self,channel,robotname,content,icon_emoji,infoType,queueContent):
         import urllib
@@ -26,8 +26,6 @@ class slackMsg(object):
             noticeInfo = "command feedback"
             color = "#4EEE94"
 
-        print fieldsList
-        exit(1)
         infoDict = {
             "icon_emoji":icon_emoji,
             "username":robotname,
@@ -45,7 +43,7 @@ class slackMsg(object):
             "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png"
         }
         data['payload'] = json.dumps(infoDict)
-        url = 'https://hooks.slack.com/services/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'
+        url = self.url
         post_data = urllib.urlencode(data)
         req = urllib2.urlopen(url,post_data)
         content = req.read()
