@@ -5,21 +5,21 @@
 commandTip(){
   echo 'please enter the param,the command format is:'
   echo '=============================================='
-  echo './make.sh start'
-  echo './make.sh stop'
-  echo './make.sh install'
-  echo './make.sh restart'
+  echo './lazybones start'
+  echo './lazybones stop'
+  echo './lazybones install'
+  echo './lazybones restart'
   echo '=============================================='
   echo 'if the permission deny ,please execute:'
-  echo 'chmod +x ./make.sh'
+  echo 'chmod +x ./lazybones'
 }
 if [ ! -n "$1" ]; then
   commandTip
 else
   if [ "$1" = "start" ]; then
-    nohup python steup.py &> /dev/null &
-    cd ./commands
-    nohup python supervisorQueue.py &> /dev/null &
+    nohup python app.py &> /dev/null &
+    cd ./cli
+    nohup python main.py &> /dev/null &
   elif [ "$1" = "stop" ]; then
     killall python
   elif [ "$1" = "install" ]; then
@@ -27,8 +27,8 @@ else
     sudo pip install redis
   elif [ "$1" = "restart" ]; then
     #statements
-    ./make.sh stop
-    ./make.sh start
+    ./lazybones stop
+    ./lazybones start
   else
     commandTip
   fi

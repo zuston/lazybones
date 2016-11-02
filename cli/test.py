@@ -1,8 +1,8 @@
 import sys
 sys.path.append("..")
 
-import component.commonApi.pluginManage as pm
-import component.commonApi.pluginAct as pa
+import component.commonInterface.pluginManage as pm
+import component.commonInterface.pluginAct as pa
 
 
 def test_GetAllPlugin():

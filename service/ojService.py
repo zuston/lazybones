@@ -1,9 +1,8 @@
 # -*- coding:utf-8 -*-
 
-# ojService 是一个服务，在这个平台内会有很多服务，根据slack信息来进行解析和进行service
 import sys
 sys.path.append('..')
-import funtools.mailTool as mt
+import component.tools.mailTool as mt
 class ojService(object):
     def __init__(self):
         pass

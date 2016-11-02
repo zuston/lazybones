@@ -4,8 +4,7 @@ try {
     if (!method_exists($weather, $argv[1])) {
         throw new Exception('weatherService function:' . $argv[1] . ' not exist');
     }
-    //echo json_encode([1, $weather->{$argv[1]}($argv[2])]);
-    echo $weather->{$argv[1]}($argv[2]);
+    echo json_encode([1, $weather->{$argv[1]}($argv[2])]);
 } catch(Exception $e) {
     echo json_encode([0, $e->getMessage()]);
 }

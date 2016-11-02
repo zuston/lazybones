@@ -3,12 +3,14 @@
 import sys
 sys.path.append("..")
 
-import component.commonApi.pluginAct as pa
-import component.commonApi.pluginManage as pm
+import component.commonInterface.pluginAct as pa
+import component.commonInterface.pluginManage as pm
 import component.tools.redisQueue as rq
 import component.tools.slackMsg as sm
 import time
 import logging
+
+queueContent = ""
 
 def __getCommand():
     redisInstance = rq.redisQueue("zqueue")
@@ -75,14 +77,12 @@ def __sendAuto(taskInfo):
 
 def __sendSlack(taskInfo,infoType):
     slackInstance = sm.slackMsg()
-    if infoType==1:
-        info = "有执行结果"
-    if infoType==0:
-        info = "提示信息"
-    slackInstance.sendMsg('#zbot', 'robot', info, ':ghost:')
+    global queueContent
+    slackInstance.sendMsg('#zbot', 'clo', taskInfo, ':celeste:',infoType,queueContent)
 
 def loop():
     while(True):
+        global queueContent
         queueContent = __getCommand()
         if queueContent==None:
             time.sleep(1)
@@ -95,6 +95,8 @@ def test():
     print __sendAuto(__controller(["newsService","gt"]))
     print __sendAuto(__controller(["weatherService","get","上海"]))
 
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s %(levelname)s %(message)s',
@@ -102,8 +104,7 @@ if __name__ == "__main__":
                         filename='../log/service.log',
                         filemode='w')
     loop()
-
-
+    # test()
 
 
 

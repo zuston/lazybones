@@ -46,8 +46,9 @@ class pluginAct(object):
         status,output = commands.getstatusoutput(self.pluginSuffix+" "+
                                                  path+" "+self.pluginFunciton+" "+
                                                  paramList)
+        print self.pluginSuffix+" "+ path+" "+self.pluginFunciton+" "+paramList
         if status!=0:
-            return {0:"参数错误"}
+            return {0:"param error"}
         else:
             return {1:output}
 
