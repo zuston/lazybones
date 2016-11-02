@@ -29,7 +29,10 @@ class pluginAct(object):
         func = getattr(instance(),self.pluginFunciton)
         try:
             returnRes = func() if self.pluginParams==None else func(self.pluginParams)
-            res = {1:returnRes}
+            if 1 in returnRes.keys():
+                res = {1:returnRes[1]}
+            else:
+                res = {0:returnRes[0]}
         except:
             res = {0:"param error"}
 
@@ -46,10 +49,10 @@ class pluginAct(object):
         status,output = commands.getstatusoutput(self.pluginSuffix+" "+
                                                  path+" "+self.pluginFunciton+" "+
                                                  paramList)
-        print self.pluginSuffix+" "+ path+" "+self.pluginFunciton+" "+paramList
         if status!=0:
             return {0:"param error"}
         else:
+            # todo 需要完善json的解析对接
             return {1:output}
 
 

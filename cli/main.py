@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #coding:utf-8
 
 import sys
@@ -21,7 +22,6 @@ def __removeTrigger(queueContent):
     commandString = queueContent.split(":")[1].strip()
     commandList = commandString.split(" ")
     return commandList
-
 
 def __getAllCommand():
     allCommand = pm.pluginManage()
@@ -78,7 +78,7 @@ def __sendAuto(taskInfo):
 def __sendSlack(taskInfo,infoType):
     slackInstance = sm.slackMsg()
     global queueContent
-    slackInstance.sendMsg('#zbot', 'clo', taskInfo, ':celeste:',infoType,queueContent)
+    slackInstance.sendMsg('#lazybones', 'LazyBones', taskInfo, ':celeste:',infoType,queueContent)
 
 def loop():
     while(True):
@@ -89,6 +89,7 @@ def loop():
             continue
         commandList = __removeTrigger(queueContent)
         taskInfo = __controller(commandList)
+        print taskInfo
         __sendAuto(taskInfo)
 
 def test():
@@ -104,7 +105,6 @@ if __name__ == "__main__":
                         filename='../log/service.log',
                         filemode='w')
     loop()
-    # test()
 
 
 

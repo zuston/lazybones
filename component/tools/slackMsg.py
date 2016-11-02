@@ -10,7 +10,6 @@ class slackMsg(object):
         data = {}
         fieldsList = []
         if infoType==0:
-        #     提示信息
             contentDict = content
             for language,dict in contentDict.items():
                 for k,v in dict.items():
@@ -20,9 +19,15 @@ class slackMsg(object):
             noticeInfo = "command help"
             color = '#FF0000'
         else:
-            fieldsList.append({"title":"刚执行的命令"+queueContent,"value":content,"short":"true"})
+            valueInfo = ""
+            for k,v in content.items():
+                valueInfo += v
+            fieldsList.append({"title":"刚执行的命令"+queueContent,"value":valueInfo,"short":"true"})
             noticeInfo = "command feedback"
             color = "#4EEE94"
+
+        print fieldsList
+        exit(1)
         infoDict = {
             "icon_emoji":icon_emoji,
             "username":robotname,

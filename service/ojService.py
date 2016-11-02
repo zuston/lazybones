@@ -21,9 +21,4 @@ class ojService(object):
         }
         mail = mt.mailTool(mailConfig)
         mail.sendMail(str(msgList))
-        return [1,'ok']
-
-
-    def testAction(self,paramList=[]):
-        print 'this is the ojService'
-        return [1,'ok']
+        return {1:"the mail is flying to her!"}
